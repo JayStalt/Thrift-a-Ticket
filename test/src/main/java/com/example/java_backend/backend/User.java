@@ -19,13 +19,18 @@ class User {
   @Column(nullable=false)
   private String email;
 
+  @Column(nullable=false)
+  private String password;
+
   public User(){
     this.email = "NULL";
+    this.password = "NULL";
   }
 
-  public User(String email)
+  public User(String email, String password)
   {
     this.email = email;
+    this.password = password;
   }
   
 

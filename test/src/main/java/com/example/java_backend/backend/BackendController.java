@@ -32,12 +32,9 @@ public class BackendController {
     this.userTicketsService = userTicketsService;
   }
 
-  @PostMapping(path="/addUser") // Map ONLY POST Requests
-  public @ResponseBody String addNewUser (@RequestParam String email) {
-    // @ResponseBody means the returned String is the response, not a view name
-    // @RequestParam means it is a parameter from the GET or POST request
-    User n = new User();
-    n.setEmail(email);
+  @PostMapping(path="/addUser")
+  public @ResponseBody String addNewUser (@RequestBody User u) {
+    User n = new User(u.getEmail(), u.getPassword());
     userService.saveUser(n);
     return "Saved";
   }

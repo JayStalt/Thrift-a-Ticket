@@ -4,25 +4,32 @@ import './App.css'; // Import CSS file for styling
 function App() {
     const [venue, setVenue] = useState('');
     const [ticketPrices, setTicketPrices] = useState([]);
+    const [bookmarked, setBookmarked] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showLoginScreen, setLoginScreen] = useState(true);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showBookmarkedTickets, setBookmarkedTickets] = useState(false);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/addUser?email=' + email, {
+            const response = await fetch('http://localhost:8080/addUser',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email, password }),
             });
 
             if (response.ok) {
@@ -60,13 +67,15 @@ function App() {
     };
 
     const bookmark = async (ticket) => {
+        //console.log(ticket);
+        ticket.email = email;
         try {
             const response = await fetch('http://localhost:8080/addUserTicket', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ticket }),
+                body: JSON.stringify(ticket),
             });
 
             if (response.ok) {
@@ -82,8 +91,32 @@ function App() {
         }
     }
 
+    const getBookmark = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/userTickets/' + email, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                //console.log(data);
+                setBookmarked(data);
+                // Handle successful response from the API
+            } else {
+                throw new Error('Failed to post data');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle errors from the fetch request
+        }
+    }
+
     return (
         <div className="container">
+            <button onClick={() => {setBookmarkedTickets(true); getBookmark()}}>Show Bookmarked Tickets</button>
             <h1>Concert Ticket Search</h1>
             <div className="search-box">
                 <input
@@ -114,7 +147,7 @@ function App() {
                 <div className='login-screen'>
                     <h2>Login</h2>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="email">Email:</label>
+                        <label htmlFor="email">   Email:</label>
                         <input
                             type="email"
                             id="email"
@@ -122,9 +155,32 @@ function App() {
                             onChange={handleEmailChange}
                             required
                         />
+                        <br></br>
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            required
+                        />
+                        <br></br>
                         <button type="submit">Login</button>
                     </form>
                 </div>
+            )}
+            {showBookmarkedTickets && (
+                <div className="login-screen">
+                <button onClick={() => setBookmarkedTickets(false)}>Back</button>
+                <h2>Ticket Prices</h2>
+                <ul>
+                    {bookmarked.map((ticket, index) => (
+                        <li key={index}>
+                            <strong>{ticket.venue + "\t" + ticket.artist + "\t" + ticket.city_state + "\t" + ticket.date + "\t" + ticket.time + "\t" + ticket.seat_number }:</strong> ${ticket.price}
+                        </li>
+                    ))}
+                </ul>
+            </div>
             )}
         </div>
     );
