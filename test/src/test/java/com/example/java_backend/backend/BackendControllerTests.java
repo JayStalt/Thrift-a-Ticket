@@ -46,13 +46,14 @@ public class BackendControllerTests {
         String email = "test@example.com";
         String password = "password";
         User newUser = new User(email, password);
-        
+
+        // Mocking the saveUser method of the userService to return the newUser object
         when(userService.saveUser(newUser)).thenReturn(newUser);
-        
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/addUser")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("email", email)
-                .param("password", password))
+                .contentType(MediaType.APPLICATION_JSON)  // Changed content type to JSON
+                .content("{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}")  // Passing JSON content
+                .accept(MediaType.APPLICATION_JSON))  // Accept JSON response
                 .andReturn();
 
         assertEquals("Saved", result.getResponse().getContentAsString());
