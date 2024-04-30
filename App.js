@@ -8,9 +8,12 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showLoginScreen, setLoginScreen] = useState(true);
+    const [showRegisterScreen, setRegistrationScreen] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showBookmarkedTickets, setBookmarkedTickets] = useState(false);
+    const [showEmailInUseError, setEmailInUseError] = useState(false);
+    const [showLoginError, setLoginError] = useState(false);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -20,7 +23,51 @@ function App() {
         setPassword(e.target.value);
     };
 
-    const handleSubmit = async (e) => {
+    const showRegisterPage = () => {
+        setLoginScreen(false);
+        setRegistrationScreen(true);
+    }
+
+    const showLoginPage = () => {
+        setLoginScreen(true);
+        setRegistrationScreen(false);
+    }
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:8080/login',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                //console.log(data);
+                // Handle successful response from the API
+                if(data === true)
+                {
+                    setLoginScreen(false);
+                    setPassword('null');
+                }
+                else
+                {
+                    setLoginError(true);
+                }
+            } else {
+                throw new Error('Failed to post data');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle errors from the fetch request
+        }
+    };
+
+    const handleRegistration= async (e) => {
         e.preventDefault();
 
         try {
@@ -33,9 +80,16 @@ function App() {
             });
 
             if (response.ok) {
-                const data = await response;
-                console.log(data);
+                const data = await response.json();
+                //console.log(data);
                 // Handle successful response from the API
+                if(data === 2) {
+                    setRegistrationScreen(false);
+                    setPassword('null');
+                }
+                else if(data === 0) {
+                    setEmailInUseError(true);
+                }
             } else {
                 throw new Error('Failed to post data');
             }
@@ -43,7 +97,6 @@ function App() {
             console.error('Error:', error);
             // Handle errors from the fetch request
         }
-        setLoginScreen(false);
     };
 
     const handleSearch = async () => {
@@ -146,7 +199,7 @@ function App() {
             {showLoginScreen && (
                 <div className='login-screen'>
                     <h2>Login</h2>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleLogin}>
                         <label htmlFor="email">   Email:</label>
                         <input
                             type="email"
@@ -167,6 +220,44 @@ function App() {
                         <br></br>
                         <button type="submit">Login</button>
                     </form>
+                    {showLoginError && 
+                        <p>Email or Password is incorrect</p>
+                    }
+                    <br></br>
+                    <br></br>
+                    <button onClick={showRegisterPage}>New? Click to register</button>
+                </div>
+            )}
+            {showRegisterScreen&& (
+                <div className='login-screen'>
+                    <h2>Register</h2>
+                    <form onSubmit={handleRegistration}>
+                        <label htmlFor="email">   Email:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            required
+                        />
+                        <br></br>
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            required
+                        />
+                        <br></br>
+                        <button type="submit">Register</button>
+                    </form>
+                    {showEmailInUseError && 
+                        <p>Email in use</p>
+                    }
+                    <br></br>
+                    <br></br>
+                    <button onClick={showLoginPage}>Login</button>
                 </div>
             )}
             {showBookmarkedTickets && (

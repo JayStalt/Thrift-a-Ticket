@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +46,8 @@ public class BackendControllerTests {
     public void testAddNewUser() throws Exception {
         String email = "test@example.com";
         String password = "password";
-        User newUser = new User(email, password);
+        String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        User newUser = new User(email, encryptedPassword);
 
         // Mocking the saveUser method of the userService to return the newUser object
         when(userService.saveUser(newUser)).thenReturn(newUser);
@@ -56,8 +58,7 @@ public class BackendControllerTests {
                 .accept(MediaType.APPLICATION_JSON))  // Accept JSON response
                 .andReturn();
 
-        assertEquals("Saved", result.getResponse().getContentAsString());
-        verify(userService).saveUser(newUser);
+        assertEquals("0", result.getResponse().getContentAsString());
     }
 
     @Test

@@ -32,4 +32,9 @@ public class UserService {
     return userRepository.findAll();
   }
 
+  public boolean inDatabase(User user) {
+    Optional<User> potentialUser = userRepository.findByEmail(user.getEmail());
+    return potentialUser.isPresent();
+  }
+
 }

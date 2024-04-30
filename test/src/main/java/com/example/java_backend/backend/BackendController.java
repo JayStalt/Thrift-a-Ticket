@@ -1,5 +1,6 @@
 package com.example.java_backend.backend;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +34,31 @@ public class BackendController {
   }
 
   @PostMapping(path="/addUser")
-  public @ResponseBody String addNewUser (@RequestBody User u) {
-    User n = new User(u.getEmail(), u.getPassword());
-    userService.saveUser(n);
-    return "Saved";
+  public @ResponseBody int addNewUser(@RequestBody User u) {
+      String encryptedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
+      User n = new User(u.getEmail(), encryptedPassword);
+      try {
+          User savedUser = userService.saveUser(n);
+          if (savedUser == null) {
+              // User already exists
+              return 0;
+          } else {
+              // User saved successfully
+              return 2;
+          }
+      } catch (Exception e) {
+          // Error occurred while saving user
+          System.err.println("Error occurred while adding user: " + e.getMessage());
+          e.printStackTrace();
+          return 1;
+      }
+  }
+
+  @PostMapping(path="/login")
+  public @ResponseBody boolean login (@RequestBody User u) {
+    String encryptedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
+    User n = new User(u.getEmail(), encryptedPassword);
+    return userService.inDatabase(n);
   }
 
   @PostMapping(path="/addUserConcert") // Map ONLY POST Requests
@@ -82,5 +104,6 @@ public class BackendController {
     // This returns a JSON or XML with the user concerts
     return userTicketsService.findAllByEmail(email);
   }
+
 }
 
