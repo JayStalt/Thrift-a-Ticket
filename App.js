@@ -47,15 +47,10 @@ function App() {
 
             if (response.ok) {
                 const data = await response.json();
-                //console.log(data);
-                // Handle successful response from the API
-                if(data === true)
-                {
+                if(data === true) {
                     setLoginScreen(false);
                     setPassword('null');
-                }
-                else
-                {
+                } else {
                     setLoginError(true);
                 }
             } else {
@@ -81,13 +76,10 @@ function App() {
 
             if (response.ok) {
                 const data = await response.json();
-                //console.log(data);
-                // Handle successful response from the API
                 if(data === 2) {
                     setRegistrationScreen(false);
                     setPassword('null');
-                }
-                else if(data === 0) {
+                } else if(data === 0) {
                     setEmailInUseError(true);
                 }
             } else {
@@ -111,7 +103,6 @@ function App() {
                 },
             });
             const data = await response.json();
-            console.log(data);
             setTicketPrices(data);
         } catch (error) {
             setError('Failed to fetch ticket prices. Please try again later.');
@@ -120,7 +111,6 @@ function App() {
     };
 
     const bookmark = async (ticket) => {
-        //console.log(ticket);
         ticket.email = email;
         try {
             const response = await fetch('http://localhost:8080/addUserTicket', {
@@ -133,7 +123,6 @@ function App() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 // Handle successful response from the API
             } else {
                 throw new Error('Failed to post data');
@@ -155,9 +144,7 @@ function App() {
 
             if (response.ok) {
                 const data = await response.json();
-                //console.log(data);
                 setBookmarked(data);
-                // Handle successful response from the API
             } else {
                 throw new Error('Failed to post data');
             }
@@ -170,7 +157,7 @@ function App() {
     return (
         <div className="container">
             <button onClick={() => {setBookmarkedTickets(true); getBookmark()}}>Show Bookmarked Tickets</button>
-            <h1>Concert Ticket Search</h1>
+            <h2>Concert Ticket Search</h2>
             <div className="search-box">
                 <input
                     type="text"
@@ -189,8 +176,9 @@ function App() {
                     <ul>
                         {ticketPrices.map((ticket, index) => (
                             <li key={index}>
-                                <strong>{ticket.venue + "\t" + ticket.artist + "\t" + ticket.city_state + "\t" + ticket.date + "\t" + ticket.time + "\t" + ticket.seat_number }:</strong> ${ticket.price}
-                                <br></br><button onClick={() => bookmark(ticket)}>Bookmark</button>
+                                <strong>{ticket.venue} - ${ticket.price}</strong>
+                                <br/>
+                                <button onClick={() => bookmark(ticket)}>Bookmark</button>
                             </li>
                         ))}
                     </ul>
@@ -198,9 +186,15 @@ function App() {
             )}
             {showLoginScreen && (
                 <div className='login-screen'>
-                    <h2>Login</h2>
+                    <div className="banner">
+                        <div className='logo'>
+                        <h1>Thrift-A-Ticket</h1>
+                        </div>
+                    </div>
+                    <div className='login-info'>
+                    <h2>Login </h2>
                     <form onSubmit={handleLogin}>
-                        <label htmlFor="email">   Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <input
                             type="email"
                             id="email"
@@ -208,7 +202,7 @@ function App() {
                             onChange={handleEmailChange}
                             required
                         />
-                        <br></br>
+                        <br/>
                         <label htmlFor="password">Password:</label>
                         <input
                             type="password"
@@ -217,22 +211,25 @@ function App() {
                             onChange={handlePasswordChange}
                             required
                         />
-                        <br></br>
+                        <br/>
                         <button type="submit">Login</button>
                     </form>
-                    {showLoginError && 
-                        <p>Email or Password is incorrect</p>
-                    }
-                    <br></br>
-                    <br></br>
+                    {showLoginError && <p>Email or Password is incorrect</p>}
                     <button onClick={showRegisterPage}>New? Click to register</button>
+                    </div>
                 </div>
             )}
-            {showRegisterScreen&& (
+            {showRegisterScreen && (
                 <div className='login-screen'>
+                    <div className="banner">
+                        <div className='logo'>
+                        <h1>Thrift-A-Ticket</h1>
+                        </div>
+                    </div>
+                    <div className='login-info'>
                     <h2>Register</h2>
                     <form onSubmit={handleRegistration}>
-                        <label htmlFor="email">   Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <input
                             type="email"
                             id="email"
@@ -240,7 +237,7 @@ function App() {
                             onChange={handleEmailChange}
                             required
                         />
-                        <br></br>
+                        <br/>
                         <label htmlFor="password">Password:</label>
                         <input
                             type="password"
@@ -249,29 +246,26 @@ function App() {
                             onChange={handlePasswordChange}
                             required
                         />
-                        <br></br>
+                        <br/>
                         <button type="submit">Register</button>
                     </form>
-                    {showEmailInUseError && 
-                        <p>Email in use</p>
-                    }
-                    <br></br>
-                    <br></br>
+                    {showEmailInUseError && <p>Email in use</p>}
                     <button onClick={showLoginPage}>Login</button>
+                    </div>
                 </div>
             )}
             {showBookmarkedTickets && (
                 <div className="login-screen">
-                <button onClick={() => setBookmarkedTickets(false)}>Back</button>
-                <h2>Ticket Prices</h2>
-                <ul>
-                    {bookmarked.map((ticket, index) => (
-                        <li key={index}>
-                            <strong>{ticket.venue + "\t" + ticket.artist + "\t" + ticket.city_state + "\t" + ticket.date + "\t" + ticket.time + "\t" + ticket.seat_number }:</strong> ${ticket.price}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                    <button onClick={() => setBookmarkedTickets(false)}>Back</button>
+                    <h2>Bookmarked Tickets</h2>
+                    <ul>
+                        {bookmarked.map((ticket, index) => (
+                            <li key={index}>
+                                <strong>{ticket.venue} - ${ticket.price}</strong>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             )}
         </div>
     );
