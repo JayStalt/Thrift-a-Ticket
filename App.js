@@ -14,7 +14,7 @@ function App() {
     const [showBookmarkedTickets, setBookmarkedTickets] = useState(false);
     const [showEmailInUseError, setEmailInUseError] = useState(false);
     const [showLoginError, setLoginError] = useState(false);
-
+    
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };
@@ -185,7 +185,7 @@ function App() {
                 </div>
             )}
             {showLoginScreen && (
-                <div className='login-screen'>
+                <div className='just-login-custom'>
                     <div className="banner">
                         <div className='logo'>
                         <h1>Thrift-A-Ticket</h1>
@@ -250,12 +250,17 @@ function App() {
                         <button type="submit">Register</button>
                     </form>
                     {showEmailInUseError && <p>Email in use</p>}
-                    <button onClick={showLoginPage}>Login</button>
+                    <button onClick={showLoginPage}>Already registered?</button>
                     </div>
                 </div>
             )}
             {showBookmarkedTickets && (
                 <div className="login-screen">
+                    <div className="banner">
+                        <div className='logo'>
+                        <h1>Thrift-A-Ticket</h1>
+                        </div>
+                    </div>
                     <button onClick={() => setBookmarkedTickets(false)}>Back</button>
                     <h2>Bookmarked Tickets</h2>
                     <ul>
@@ -269,6 +274,7 @@ function App() {
             )}
         </div>
     );
+    
 }
-
 export default App;
+
