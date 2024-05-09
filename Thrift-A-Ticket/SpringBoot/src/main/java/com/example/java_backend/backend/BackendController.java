@@ -66,16 +66,16 @@ public class BackendController {
       // @ResponseBody means the returned String is the response, not a view name
       // @RequestBody binds the JSON data to the UserTicketRequest object
       UserTickets n = new UserTickets(request.getEmail(), request.getArtist(), request.getVenue(),
-              request.getDate(), request.getTime(), request.getCityState(), request.getSeatNumber(), request.getPrice(), request.getPurchase_link());
+              request.getDate(), request.getTime(), request.getPrice(), request.getPurchase_link(), request.getImg_url());
       userTicketsService.saveUserConcert(n);
       return "Saved";
   }
   
   @GetMapping(path="/searchTickets/{event}/{state_letters}")
-  public @ResponseBody UserTickets apiSearch(@PathVariable String event, @PathVariable String state_letters) {
+  public @ResponseBody Iterable<UserTickets> apiSearch(@PathVariable String event, @PathVariable String state_letters) {
     // This returns a JSON or XML with the users
     return api.callAPI(event, state_letters);
-    //return new UserTickets();
+    //return new UserTickets(state_letters, state_letters, state_letters, state_letters, state_letters, state_letters, state_letters, state_letters, state_letters);
   }
 
   @GetMapping(path="/searchTickets")

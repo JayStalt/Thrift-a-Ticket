@@ -61,7 +61,7 @@ public class BackendControllerTests {
     @Test
     public void testAddNewUserTicket() throws Exception {
         UserTickets userTickets = new UserTickets("test@example.com", "Artist", "Venue",
-                "Date", "Time", "CityState", "SeatNumber", "Price", "URL");
+                "Date", "Time", "Price", "URL", "img_url");
         
         when(userTicketsService.saveUserConcert(userTickets)).thenReturn(userTickets);
         

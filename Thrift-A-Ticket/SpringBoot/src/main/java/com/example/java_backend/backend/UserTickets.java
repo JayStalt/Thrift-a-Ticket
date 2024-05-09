@@ -32,16 +32,13 @@ public class UserTickets {
   private String time;
 
   @Column(nullable=false)
-  private String cityState;
-
-  @Column(nullable=false)
-  private String seatNumber;
-
-  @Column(nullable=false)
   private String price;
 
   @Column(nullable=false)
   private String purchase_link;
+
+  @Column(nullable=false)
+  private String img_url;
 
   public UserTickets(){
     this.email = "NULL";
@@ -49,26 +46,24 @@ public class UserTickets {
     this.venue = "NULL";
     this.date = "NULL";
     this.time = "NULL";
-    this.cityState = "NULL";
-    this.seatNumber = "NULL";
     this.price = "NULL";
     this.purchase_link = "NULL";
+    this.img_url = "NULL";
   }
 
-  public UserTickets(String email, String artist, String venue, String date, String time, String city_state, String seat_number, String price, String purchase_link)
+  public UserTickets(String email, String artist, String venue, String date, String time, String price, String purchase_link, String img_url)
   {
     this.email = email;
     this.artist = artist;
     this.venue = venue;
     this.date = date;
     this.time = time;
-    this.cityState = city_state;
-    this.seatNumber = seat_number;
     this.price = price;
     this.purchase_link = purchase_link;
+    this.img_url = img_url;
   }
 
   public String return_as_string() {
-    return email + "/" + artist + "/" + venue+ "/" +date + "/" + time + "/" + cityState + "/" + seatNumber + "/" + price + "/" + purchase_link + "/";
+    return email + "/" + artist + "/" + venue+ "/" +date + "/" + time + "/" + price + "/" + purchase_link + "/" + img_url + "/";
   }
 }
