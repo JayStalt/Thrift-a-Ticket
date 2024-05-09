@@ -30,9 +30,6 @@ public class BackendControllerTests {
     private UserService userService;
 
     @MockBean
-    private UserConcertsService userConcertsService;
-
-    @MockBean
     private UserTicketsService userTicketsService;
 
     private ObjectMapper objectMapper;
@@ -62,25 +59,9 @@ public class BackendControllerTests {
     }
 
     @Test
-    public void testAddNewUserConcert() throws Exception {
-        UserConcerts userConcerts = new UserConcerts("test@example.com", "Artist", "Venue",
-                "Date", "Time", "CityState");
-        
-        when(userConcertsService.saveUserConcert(userConcerts)).thenReturn(userConcerts);
-        
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/addUserConcert")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userConcerts)))
-                .andReturn();
-
-        assertEquals("Saved", result.getResponse().getContentAsString());
-        verify(userConcertsService).saveUserConcert(userConcerts);
-    }
-
-    @Test
     public void testAddNewUserTicket() throws Exception {
         UserTickets userTickets = new UserTickets("test@example.com", "Artist", "Venue",
-                "Date", "Time", "CityState", "SeatNumber", "Price");
+                "Date", "Time", "CityState", "SeatNumber", "Price", "URL");
         
         when(userTicketsService.saveUserConcert(userTickets)).thenReturn(userTickets);
         

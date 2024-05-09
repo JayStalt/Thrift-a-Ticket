@@ -8,10 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity(name = "userconcerts")
-@Table(name = "userconcerts")
+@Entity(name = "usertickets")
+@Table(name = "usertickets")
 @Data
-public class UserConcerts {
+public class UserTickets {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -34,16 +34,28 @@ public class UserConcerts {
   @Column(nullable=false)
   private String cityState;
 
-  public UserConcerts(){
+  @Column(nullable=false)
+  private String seatNumber;
+
+  @Column(nullable=false)
+  private String price;
+
+  @Column(nullable=false)
+  private String purchase_link;
+
+  public UserTickets(){
     this.email = "NULL";
     this.artist = "NULL";
     this.venue = "NULL";
     this.date = "NULL";
     this.time = "NULL";
     this.cityState = "NULL";
+    this.seatNumber = "NULL";
+    this.price = "NULL";
+    this.purchase_link = "NULL";
   }
 
-  public UserConcerts(String email, String artist, String venue, String date, String time, String city_state)
+  public UserTickets(String email, String artist, String venue, String date, String time, String city_state, String seat_number, String price, String purchase_link)
   {
     this.email = email;
     this.artist = artist;
@@ -51,9 +63,12 @@ public class UserConcerts {
     this.date = date;
     this.time = time;
     this.cityState = city_state;
+    this.seatNumber = seat_number;
+    this.price = price;
+    this.purchase_link = purchase_link;
   }
 
   public String return_as_string() {
-    return email + "/" + artist + "/" + venue+ "/" +date + "/" + time + "/" + cityState + "/";
+    return email + "/" + artist + "/" + venue+ "/" +date + "/" + time + "/" + cityState + "/" + seatNumber + "/" + price + "/" + purchase_link + "/";
   }
 }

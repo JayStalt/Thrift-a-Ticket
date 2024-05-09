@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css'; // Import CSS file for styling
 
 function App() {
@@ -32,6 +32,11 @@ function App() {
         setLoginScreen(true);
         setRegistrationScreen(false);
     }
+
+    useEffect(() => {
+        //console.log(ticketPrices.length);
+        console.log(ticketPrices);
+    }, [ticketPrices]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -95,7 +100,7 @@ function App() {
         setError('');
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/allUserTickets`, {
+            const response = await fetch(`http://localhost:8080/searchTickets/Zach Bryan/CA`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -103,7 +108,9 @@ function App() {
                 },
             });
             const data = await response.json();
-            setTicketPrices(data);
+            const temp = [data];
+            console.log(temp);
+            setTicketPrices(temp);
         } catch (error) {
             setError('Failed to fetch ticket prices. Please try again later.');
         }
@@ -170,7 +177,7 @@ function App() {
                 </button>
             </div>
             {error && <div className="error">{error}</div>}
-            {ticketPrices.length > 0 && (
+            {ticketPrices != null && (
                 <div className="ticket-prices">
                     <h2>Ticket Prices</h2>
                     <ul>

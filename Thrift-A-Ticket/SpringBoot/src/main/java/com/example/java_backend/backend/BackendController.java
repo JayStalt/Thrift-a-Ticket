@@ -21,16 +21,16 @@ public class BackendController {
   private final UserService userService;
 
   @Autowired
-  private final UserConcertsService userConcertsService;
-
-  @Autowired
   private final UserTicketsService userTicketsService;
 
   @Autowired
-  public BackendController(UserService userService, UserConcertsService userConcertsService, UserTicketsService userTicketsService) {
+  private final ticketAPIMain api;
+
+  @Autowired
+  public BackendController(UserService userService, UserTicketsService userTicketsService, ticketAPIMain api) {
     this.userService = userService;
-    this.userConcertsService = userConcertsService;
     this.userTicketsService = userTicketsService;
+    this.api = api;
   }
 
   @PostMapping(path="/addUser")
@@ -61,24 +61,27 @@ public class BackendController {
     return userService.inDatabase(n);
   }
 
-  @PostMapping(path="/addUserConcert") // Map ONLY POST Requests
-  public @ResponseBody String addNewUserConcert(@RequestBody UserConcerts request) {
-      // @ResponseBody means the returned String is the response, not a view name
-      // @RequestBody binds the JSON data to the UserConcertRequest object
-      UserConcerts n = new UserConcerts(request.getEmail(), request.getArtist(), request.getVenue(),
-              request.getDate(), request.getTime(), request.getCityState());
-      userConcertsService.saveUserConcert(n);
-      return "Saved";
-  }
-  
   @PostMapping(path="/addUserTicket") // Map ONLY POST Requests
   public @ResponseBody String addNewUserTicket(@RequestBody UserTickets request) {
       // @ResponseBody means the returned String is the response, not a view name
       // @RequestBody binds the JSON data to the UserTicketRequest object
       UserTickets n = new UserTickets(request.getEmail(), request.getArtist(), request.getVenue(),
-              request.getDate(), request.getTime(), request.getCityState(), request.getSeatNumber(), request.getPrice());
+              request.getDate(), request.getTime(), request.getCityState(), request.getSeatNumber(), request.getPrice(), request.getPurchase_link());
       userTicketsService.saveUserConcert(n);
       return "Saved";
+  }
+  
+  @GetMapping(path="/searchTickets/{event}/{state_letters}")
+  public @ResponseBody UserTickets apiSearch(@PathVariable String event, @PathVariable String state_letters) {
+    // This returns a JSON or XML with the users
+    return api.callAPI(event, state_letters);
+    //return new UserTickets();
+  }
+
+  @GetMapping(path="/searchTickets")
+  public @ResponseBody Iterable<User> searchTickets() {
+    // This returns a JSON or XML with the users
+    return userService.findAll();
   }
 
   @GetMapping(path="/all")
@@ -91,12 +94,6 @@ public class BackendController {
   public @ResponseBody Iterable<UserTickets> getAllUserTickets() {
     // This returns a JSON or XML with the user tickets
     return userTicketsService.findAll();
-  }
-
-  @GetMapping(path="/allUserConcerts")
-  public @ResponseBody Iterable<UserConcerts> getAllUserConcerts() {
-    // This returns a JSON or XML with the user concerts
-    return userConcertsService.findAll();
   }
 
   @GetMapping("/userTickets/{email}")
