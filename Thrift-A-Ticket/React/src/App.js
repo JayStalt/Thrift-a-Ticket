@@ -100,7 +100,7 @@ function App() {
         setError('');
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/searchTickets/Zach Bryan/CA`, {
+            const response = await fetch(`http://localhost:8080/searchTickets/` + venue + `/CA`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -168,7 +168,7 @@ function App() {
             <div className="search-box">
                 <input
                     type="text"
-                    placeholder="Enter Venue..."
+                    placeholder="Enter Event..."
                     value={venue}
                     onChange={(e) => setVenue(e.target.value)}
                 />
